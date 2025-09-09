@@ -1,38 +1,39 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
+import Header from "./components/Header";
+import Hero from "./components/Hero";
+import Menu from "./components/Menu";
+import Locations from "./components/Locations";
+import About from "./components/About";
+import Contact from "./components/Contact";
+import Footer from "./components/Footer";
 
-const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:8000';
-const API = `${API_BASE}/api`;
-
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
+const CafitoApp = () => {
+  const [language, setLanguage] = useState('en');
 
   useEffect(() => {
-    helloWorldApi();
-  }, []);
+    // Apply RTL styling for Arabic
+    if (language === 'ar') {
+      document.documentElement.dir = 'rtl';
+      document.documentElement.lang = 'ar';
+    } else {
+      document.documentElement.dir = 'ltr';
+      document.documentElement.lang = 'en';
+    }
+  }, [language]);
 
   return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://fenado.ai"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://fenado.ai/fenado-logo.png" className="w-32 h-32 rounded-lg cursor-pointer" alt="Fenado Logo" />
-        </a>
-        <p className="mt-5">Your AI-powered app will appear here</p>
-      </header>
+    <div className={`min-h-screen ${language === 'ar' ? 'rtl' : 'ltr'}`}>
+      <Header language={language} setLanguage={setLanguage} />
+      <main>
+        <Hero language={language} />
+        <Menu language={language} />
+        <About language={language} />
+        <Locations language={language} />
+        <Contact language={language} />
+      </main>
+      <Footer language={language} />
     </div>
   );
 };
@@ -42,9 +43,7 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
+          <Route path="/" element={<CafitoApp />} />
         </Routes>
       </BrowserRouter>
     </div>
